@@ -11,10 +11,10 @@ namespace ConsoleApp1
     {
         public static List<string> PathList = new List<string>();
         double RasstoalieMezdyM = 0.0;
-        public static double ugol = Math.PI/4.0;
+        public static double ugol = Math.PI/3.0;
         static async Task Main(string[] args)
         {
-            string path = Environment.CurrentDirectory + @"\path.svg";
+            string path = Environment.CurrentDirectory + @"\map.svg";
             bool isEnd = true;
             try
             {
@@ -26,25 +26,25 @@ namespace ConsoleApp1
                         bool contains = c.Contains("<path style=\"stroke:none;\" d=\"M");
                         if (contains && isEnd)
                         {
-                            ReversLocations(c);
-                            //string str = RevertUgol(c);
-                            //using (StreamWriter sw = new StreamWriter(Environment.CurrentDirectory + @"\path.svg", true, System.Text.Encoding.Default))
-                            //{
-                            //    await sw.WriteLineAsync(str);
-                            //}
+                           // ReversLocations(c);
+                            string str = RevertUgol(c);
+                            using (StreamWriter sw = new StreamWriter(Environment.CurrentDirectory + @"\path.svg", true, System.Text.Encoding.Default))
+                            {
+                                await sw.WriteLineAsync(str);
+                            }
 
                         }
-                        //else
-                        //{
-                        //using (StreamWriter sw = new StreamWriter(Environment.CurrentDirectory + @"\path.svg", true, System.Text.Encoding.Default))
-                        //{
-                        //    await sw.WriteLineAsync(c);
-                        //}
-                        //}
-                        //if (c.Contains(@"image"))
-                        //{
-                        //    isEnd = false;
-                        //}
+                        else
+                        {
+                            using (StreamWriter sw = new StreamWriter(Environment.CurrentDirectory + @"\path.svg", true, System.Text.Encoding.Default))
+                            {
+                                await sw.WriteLineAsync(c);
+                            }
+                        }
+                        if (c.Contains(@"image"))
+                        {
+                            isEnd = false;
+                        }
                     }
                     Console.WriteLine("End");
                 }
