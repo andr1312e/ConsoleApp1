@@ -10,8 +10,9 @@ namespace ConsoleApp1
     class Program
     {
         public static List<string> PathList = new List<string>();
+        public static List<string> RotatedList = new List<string>();
         double RasstoalieMezdyM = 0.0;
-        public static double ugol = Math.PI/3.0;
+        public static double ugol = 5.0*Math.PI/3.0;
         static async Task Main(string[] args)
         {
             string path = Environment.CurrentDirectory + @"\map.svg";
@@ -123,19 +124,18 @@ namespace ConsoleApp1
         {
            double DopustRasstoanieMezdyTochkami = 5.0;
            int CurrentPosition = 0;
-           if(ugol<6000)
+           if(true)
             {
                 if(PathList.Count==0)
                 {
                     PathList.Add(currentString);
-                    CurrentPosition++;
                 }
                 else
                 {
                     double CurrentRasstoanie = GetRasstoanie(GetMPoint(currentString), GetMPoint(PathList.Last()));
                     if (CurrentRasstoanie == 2.3898325197821686)
                     {
-                        RotateWord(CurrentRasstoanie);
+                        RotateWords();
                         PathList = new List<string>();
                         PathList.Add(currentString);
                     }
@@ -204,150 +204,96 @@ namespace ConsoleApp1
             Console.WriteLine("Иксы: " + x1 + " - " + x2 +" игреки " +  y1 + " - " + y2);
             return Math.Sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
         }
-        public static void RotateWord(double CurrentRasstoanie)
+        public static void RotateWords()
         {
-            if(PathList.Count>1)
+            string center = PathList.ElementAt(PathList.Count / 2 + 1);
+            double[] CenterCoordinats = GetCoordinatesCenter(center);
+
+            double[] normalcooficent=new double[2];
+            normalcooficent = GetNormaleCooficent(CenterCoordinats);
+            foreach(string str in PathList)
             {
-                int firstElement = 0;
-                int lastElement = PathList.Count;
-                string starter = string.Empty;
-                string ender = string.Empty;
-
-                bool flagSecond = false;
-                string centerString = string.Empty;
-                string result = string.Empty;
-                string forFirst = string.Empty;
-                string forSecond = string.Empty;
-                do
+                if(str!=center)
                 {
-                    centerString = PathList.ElementAt(PathList.Count / 2 + 1);
-                    starter = PathList.ElementAt(firstElement);
-                    ender = PathList.ElementAt(lastElement);
-
-                    int numOfCases = 0;
-                    for (int i = 0; i < starter.Length; i++)
-                    {
-                        char value = starter[i];
-                        if (numOfCases != 3)
-                        {
-                            if (starter[i] == '"')
-                            {
-                                numOfCases++;
-                            }
-                            result += starter[i];
-                        }
-                        else
-                        {
-                            if (starter[i] == '"')
-                            {
-                                numOfCases++;
-                            }
-                            if (starter[i] != '-' && starter[i] != '.' && starter[i] != '1' && starter[i] != '2' && starter[i] != '3' && starter[i] != '4' && starter[i] != '5' && starter[i] != '6' && starter[i] != '7' && starter[i] != '8' && starter[i] != '9' && starter[i] != '0')
-                            {
-                                result += starter[i];
-                            }
-                            else
-                            {
-                                if (!flagSecond)
-                                {
-                                    forFirst += starter[i];
-                                    if (starter[i + 1] == ' ')
-                                    {
-                                        flagSecond = true;
-                                        continue;
-                                    }
-                                }
-                                if (flagSecond)
-                                {
-                                    forSecond += starter[i];
-                                    if (starter[i + 1] == ' ')
-                                    {
-
-                                        double DFirst = Double.Parse(forFirst, System.Globalization.CultureInfo.InvariantCulture);
-
-
-                                        double DSecond = Double.Parse(forSecond, System.Globalization.CultureInfo.InvariantCulture);
-                                        double firstValCorrect = DFirst +CurrentRasstoanie;
-                                        double secondValCorrect = DSecond+CurrentRasstoanie;
-                                        flagSecond = false;
-                                        result += firstValCorrect.ToString().Replace(',', '.');
-                                        result += " ";
-                                        result += secondValCorrect.ToString().Replace(',', '.');
-                                        forFirst = string.Empty;
-                                        Console.WriteLine(firstValCorrect + secondValCorrect + " точка");
-                                        forSecond = string.Empty;
-                                        continue;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    starter = result;
-                    numOfCases = 0;
-                     flagSecond = false;
-                     result = string.Empty;
-                     forFirst = string.Empty;
-                     forSecond = string.Empty;
-                    for (int i = 0; i < ender.Length; i++)
-                    {
-                        char value = ender[i];
-                        if (numOfCases != 3)
-                        {
-                            if (ender[i] == '"')
-                            {
-                                numOfCases++;
-                            }
-                            result += ender[i];
-                        }
-                        else
-                        {
-                            if (ender[i] == '"')
-                            {
-                                numOfCases++;
-                            }
-                            if (ender[i] != '-' && ender[i] != '.' && ender[i] != '1' && ender[i] != '2' && ender[i] != '3' && ender[i] != '4' && ender[i] != '5' && ender[i] != '6' && ender[i] != '7' && ender[i] != '8' && ender[i] != '9' && ender[i] != '0')
-                            {
-                                result += ender[i];
-                            }
-                            else
-                            {
-                                if (!flagSecond)
-                                {
-                                    forFirst += ender[i];
-                                    if (ender[i + 1] == ' ')
-                                    {
-                                        flagSecond = true;
-                                        continue;
-                                    }
-                                }
-                                if (flagSecond)
-                                {
-                                    forSecond += ender[i];
-                                    if (ender[i + 1] == ' ')
-                                    {
-                                        double DFirst = Double.Parse(forFirst, System.Globalization.CultureInfo.InvariantCulture);
-                                        double DSecond = Double.Parse(forSecond, System.Globalization.CultureInfo.InvariantCulture);
-                                        double firstValCorrect = DFirst + CurrentRasstoanie;
-                                        double secondValCorrect = DSecond + CurrentRasstoanie;
-                                        flagSecond = false;
-                                        result += firstValCorrect.ToString().Replace(',', '.');
-                                        result += " ";
-                                        result += secondValCorrect.ToString().Replace(',', '.');
-                                        forFirst = string.Empty;
-                                        forSecond = string.Empty;
-                                        continue;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-
-                    firstElement++;
-                    lastElement--;
+                    RotatedList.Add(RotateItem(str, normalcooficent));
                 }
-                while (lastElement - firstElement > 1);
             }
+
+        }
+
+        private static string RotateItem(string str, double[] normalcooficent)
+        {
+            throw new NotImplementedException();
+
+        }
+
+        private static double[] GetNormaleCooficent(double[] centerCoordinats)
+        {
+            if(ugol==Math.PI/2.0 || ugol==3.0*Math.PI/2.0)
+            {
+                //get to ctg
+            }
+            if(ugol<Math.PI/2.0 || ugol>3.0 * Math.PI / 2.0)
+            {
+                //ony get to line
+            }
+            if (ugol > Math.PI / 2.0 && ugol < 3.0 * Math.PI / 2.0)
+            {
+                //get to line
+                //rotate
+            }
+            throw new NotImplementedException();
+        }
+        private static double[] GetCoordinatesCenter(string strg)
+        {
+            double[] center = new double[2];
+            string result = string.Empty;
+            string forFirst = string.Empty;
+            string forSecond = string.Empty;
+            int numOfCases = 0;
+            bool flagSecond = false;
+            for (int i = 0; i < strg.Length; i++)
+            {
+                char value = strg[i];
+                if (numOfCases != 3)
+                {
+                    if (strg[i] == '"')
+                    {
+                        numOfCases++;
+                    }
+                    result += strg[i];
+                }
+                else
+                {
+                    if (strg[i] == '"')
+                    {
+                        numOfCases++;
+                    }
+                    if (strg[i] != '-' || strg[i] != '.' || strg[i] != '1' || strg[i] != '2' || strg[i] != '3' || strg[i] != '4' || strg[i] != '5' || strg[i] != '6' || strg[i] != '7' || strg[i] != '8' || strg[i] != '9' || strg[i] != '0')
+                    {
+                        if (!flagSecond)
+                        {
+                            forFirst += strg[i];
+                            if (strg[i + 1] == ' ')
+                            {
+                                flagSecond = true;
+                                continue;
+                            }
+                        }
+                        if (flagSecond)
+                        {
+                            forSecond += strg[i];
+                            if (strg[i + 1] == ' ')
+                            {
+                                center[0] = Double.Parse(forFirst, System.Globalization.CultureInfo.InvariantCulture);
+                                center[1] = Double.Parse(forSecond, System.Globalization.CultureInfo.InvariantCulture);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            return center;
         }
         public static string GetM(string strg)
         {
