@@ -16,7 +16,7 @@ namespace ConsoleApp1
 
 
         double RasstoalieMezdyM = 0.0;
-        public static double ugol = Math.PI/3;
+        public static double ugol = Math.PI / 3;
 
 
 
@@ -36,7 +36,7 @@ namespace ConsoleApp1
                         bool contains = c.Contains("<path style=\"stroke:none;\" d=\"M");
                         if (contains && isEnd)
                         {
-                            string str = RevertUgol(c);
+                            string str = ReversLocations(RevertUgol(c));
                             //string str = ReversLocations(RevertUgol(c));
                             using (StreamWriter sw = new StreamWriter(Environment.CurrentDirectory + @"\path.svg", true, System.Text.Encoding.Default))
                             {
@@ -128,35 +128,43 @@ namespace ConsoleApp1
             }
             return result;
         }
-        
-        public static string  ReversLocations(string currentString)
+
+        public static string ReversLocations(string currentString)
         {
-           double DopustRasstoanieMezdyTochkami = 5.0;
-           double CurrentRasstoanieMezdyTochkami = 0.0;
-           int CurrentPosition = 0;
-            if (currentString.Contains("path"))
+            double DopustRasstoanieMezdyTochkami = 5.0;
+            double CurrentRasstoanieMezdyTochkami = 0.0;
+            bool WordIsNotReady = true;
+            int CurrentPosition = 0;
+            while (WordIsNotReady)
             {
-                if(PathList.Count==0)
+                if (currentString.Contains("path"))
                 {
-                    PathList.Add(currentString);
-                }
-                else
-                {
-                    double CurrentRasstoanie = GetRasstoanie(GetMPoint(currentString), GetMPoint(PathList.Last()));
-                    if (PathList.Count==10)
+                    if (PathList.Count == 0)
                     {
-                        RotateWords();
-                        PathList = new List<string>();
                         PathList.Add(currentString);
                     }
                     else
                     {
-                        PathList.Add(currentString);
+                        double CurrentRasstoanie = GetRasstoanie(GetMPoint(currentString), GetMPoint(PathList.Last()));
+                        if (PathList.Count == 10)
+                        {
+                            RotateWords();
+                            PathList = new List<string>();
+                            PathList.Add(currentString);
+                            WordIsNotReady = false;
+                        }
+                        else
+                        {
+                            PathList.Add(currentString);
+                        }
                     }
                 }
             }
-            return currentString;
+            string a = RotatedList.First();
+            RotatedList.Remove(RotatedList.First());
+            return a;
         }
+
         public static double[] GetMPoint(string currentString)
         {
             double[] point = new double[] { 0.0, 0.0 };
@@ -178,7 +186,7 @@ namespace ConsoleApp1
                 }
                 else
                 {
-                    if ( currentString[i] == '-' || currentString[i] == '.' || currentString[i] == '1' || currentString[i] == '2' || currentString[i] == '3' || currentString[i] == '4' || currentString[i] == '5' || currentString[i] == '6' || currentString[i] == '7' && currentString[i] == '8' || currentString[i] == '9' || currentString[i] == '0')
+                    if (currentString[i] == '-' || currentString[i] == '.' || currentString[i] == '1' || currentString[i] == '2' || currentString[i] == '3' || currentString[i] == '4' || currentString[i] == '5' || currentString[i] == '6' || currentString[i] == '7' && currentString[i] == '8' || currentString[i] == '9' || currentString[i] == '0')
                     {
                         if (!flagSecond)
                         {
@@ -212,7 +220,7 @@ namespace ConsoleApp1
             double y1 = p1[1];
             double x2 = p2[0];
             double y2 = p2[1];
-            Console.WriteLine("Иксы: " + x1 + " - " + x2 +" игреки " +  y1 + " - " + y2);
+            Console.WriteLine("Иксы: " + x1 + " - " + x2 + " игреки " + y1 + " - " + y2);
             return Math.Sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
         }
         public static void RotateWords()
@@ -228,7 +236,7 @@ namespace ConsoleApp1
             foreach (string str in PathList)
             {
                 CurrentDistanceBy_X_and_Y = GetDistanceByPoints(NormaleCooficent, GetMPoint(str));
-                if(str!=center)
+                if (str != center)
                 {
                     RotatedList.Add(RotateItem(str, CurrentDistanceBy_X_and_Y));
                 }
@@ -315,7 +323,7 @@ namespace ConsoleApp1
                                 DFirst = Double.Parse(forFirst, System.Globalization.CultureInfo.InvariantCulture);
                                 DSecond = Double.Parse(forSecond, System.Globalization.CultureInfo.InvariantCulture);
                                 double firstVal = DFirst + CurrentDistanceBy_X_and_Y[0];
-                                double secondVal =DSecond+ CurrentDistanceBy_X_and_Y[1];
+                                double secondVal = DSecond + CurrentDistanceBy_X_and_Y[1];
                                 flagSecond = false;
                                 result += String.Format("{0:F20}", firstVal).Replace(',', '.');
                                 result += " ";
@@ -333,7 +341,7 @@ namespace ConsoleApp1
         }
 
         private static double[] GetDistanceByPoints(double[] normalcooficent, double[] currentPointCoordinat)
-        { 
+        {
             double[] distance = new double[2];
             double[] normalvector = new double[] { -normalcooficent[0], 1 };
             double[] secondLine = new double[]
@@ -341,7 +349,7 @@ namespace ConsoleApp1
                 normalcooficent[0]/normalcooficent[1], -currentPointCoordinat[0]*normalcooficent[0]/normalcooficent[1]+currentPointCoordinat[1]
             };
             double[] CommonPoint = new double[2];
-            CommonPoint=GetCommonPoint(secondLine, normalvector);
+            CommonPoint = GetCommonPoint(secondLine, normalvector);
             distance = GetCurrentDistance(CommonPoint, currentPointCoordinat);
             return distance;
 
@@ -363,11 +371,11 @@ namespace ConsoleApp1
         private static double[] GetCommonPoint(double[] secondLine, double[] normalvector)
         {
             double delta = -secondLine[0] - normalvector[0];
-            double delta1= secondLine[1]*(-secondLine[0]) +secondLine[1] *(- normalvector[0]);
-            double delta2 = -secondLine[1] +  -normalvector[1];
+            double delta1 = secondLine[1] * (-secondLine[0]) + secondLine[1] * (-normalvector[0]);
+            double delta2 = -secondLine[1] + -normalvector[1];
             double x = delta1 / delta;
             double y = delta2 / delta;
-            return new double[]{ x, y};
+            return new double[] { x, y };
         }
 
         private static double[] GetCoordinatesCenter(string strg)
